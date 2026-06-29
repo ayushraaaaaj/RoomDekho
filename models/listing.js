@@ -9,28 +9,8 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        type: {
-            filename: String,
-            url: String,
-        },
-        default: {
-            filename: "listingimage",
-            url: "https://unsplash.com/photos/a-modern-bathroom-with-double-sinks-and-a-bathtub-YDc_S7uIYic",
-        },
-        set: (v) => {
-            // if caller passes an empty string or null, fall back to default object
-            if (!v || (typeof v === "string" && v === "")) {
-                return {
-                    filename: "listingimage",
-                    url: "https://unsplash.com/photos/a-modern-bathroom-with-double-sinks-and-a-bathtub-YDc_S7uIYic",
-                };
-            }
-            // if they supply a string assume it's the url only
-            if (typeof v === "string") {
-                return { filename: "listingimage", url: v };
-            }
-            return v; // expect object with filename/url
-        },
+        url: String,
+        filename: String,
     },
     price: Number,
     location: String,
