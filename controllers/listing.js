@@ -39,26 +39,21 @@ module.exports.editListing = async (req, res) => {
         req.flash("error", "Listing you are looking for does not exist");
         return res.redirect("/listings");
     }
-    res.render("listings/edit.ejs", {listing});
+
+    res.render("listings/edit.ejs", { listing });
 }
 
 module.exports.updateListing = async (req, res) => {
     let {id} = req.params;
-    let updates = {...req.body.listing};
+    let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
-    // Convert image URL string to the expected embedded object on update.
-    if (typeof updates.image === "string") {
-        updates.image = {
-            filename: "listingimage",
-            url: updates.image,
-        };
+    if(typeof req.file !== "undefined") {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = { url, filename };
+        await listing.save();
     }
 
-    await Listing.findByIdAndUpdate(id, updates, {
-        returnDocument: 'after',
-        runValidators: true,
-        context: "query",
-    });
     req.flash("success", "Listing updated successfully");
     res.redirect(`/listings/${id}`);
 }
